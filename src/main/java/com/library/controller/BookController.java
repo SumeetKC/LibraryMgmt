@@ -3,12 +3,19 @@ package com.library.controller;
 import com.library.entity.Book;
 import com.library.entity.BookPatch;
 import com.library.service.BookService;
+
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,9 +26,35 @@ public class BookController {
 
     private final BookService bookService;
 
+    @Autowired
+    private Validator validator;
+
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
+
+    /**
+     * Create a new book with manual validation. It demonstrates how to handle validation
+     * errors without using @Valid annotation.
+     * @param book
+     * @return
+     */
+    /* 
+    @PostMapping
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        System.out.println("Validating book: " + book);
+        Set<ConstraintViolation<Book>> violations = validator.validate(book);
+        if( !violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<Book> violation : violations) {
+                sb.append(violation.getMessage()).append("; ");
+            }
+            throw new IllegalArgumentException("Validation failed: " + sb.toString());
+        }
+        return new ResponseEntity<>(bookService.createBook(book), HttpStatus.CREATED);
+    }
+
+    */
 
     @PostMapping
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {

@@ -172,24 +172,4 @@ class BookControllerTests {
                 .andExpect(jsonPath("$[1].isbn").value("9781234567891"));
     }
 
-    //@Test
-    void getBooksByIsbnRangeSort_ReturnsSortedBooksDesc() throws Exception {
-        Book book2 = new Book();
-        book2.setIsbn("9781234567891");
-        book2.setTitle("Another Book");
-        book2.setAuthor("Author");
-        book2.setPublicationYear(2000);
-        book2.setGenre(Genre.FICTION);
-        book2.setCopiesAvailable(2);
-        List<Book> books = Arrays.asList(book2, sampleBook);
-        Mockito.when(bookService.getBooksByIsbnRangeSort("9781234567890", "9781234567891", "desc")).thenReturn(books);
-        mockMvc.perform(get("/books/isbn-range")
-                        .param("startIsbn", "9781234567890")
-                        .param("endIsbn", "9781234567891")
-                        .param("sortOrder", "desc"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].isbn").value("9781234567891"))
-                .andExpect(jsonPath("$[1].isbn").value("9781234567890"));
-    }
-
 }
