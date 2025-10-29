@@ -5,10 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 public class Book {
 
