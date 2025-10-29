@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import lombok.AllArgsConstructor;
+
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Book {
 

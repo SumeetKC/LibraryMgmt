@@ -1,7 +1,7 @@
 package com.library;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.controller.BookController;
+import com.library.controller.BookControllerV1;
 import com.library.entity.Book;
 import com.library.entity.BookPatch;
 import com.library.entity.Genre;
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(BookController.class)
+@WebMvcTest(BookControllerV1.class)
 class BookControllerTests {
 
     private Book sampleBook;
@@ -53,7 +53,7 @@ class BookControllerTests {
     void createBook_ValidInput() throws Exception {
         Mockito.when(bookService.createBook(any(Book.class))).thenReturn(sampleBook);
 
-        mockMvc.perform(post("/books")
+    mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleBook)))
                 .andExpect(status().isCreated())
@@ -64,7 +64,7 @@ class BookControllerTests {
     @Test
     void createBook_InvalidIsbn_ReturnsBadRequest() throws Exception {
         sampleBook.setIsbn("12345"); // Too short
-        mockMvc.perform(post("/books")
+    mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleBook)))
                 .andExpect(status().isBadRequest());
@@ -84,7 +84,7 @@ class BookControllerTests {
     @Test
     void getAllBooks_ReturnsListOfBooks() throws Exception {
         Mockito.when(bookService.getBooks()).thenReturn(Collections.singletonList(sampleBook));
-        mockMvc.perform(get("/books"))
+    mockMvc.perform(get("/api/v1/books"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].isbn").value(sampleBook.getIsbn()));
     }
@@ -92,7 +92,7 @@ class BookControllerTests {
     @Test
     void getBookByISBN_Found_ReturnsBook() throws Exception {
         Mockito.when(bookService.getBookByISBN(sampleBook.getIsbn())).thenReturn(sampleBook);
-        mockMvc.perform(get("/books/{isbn}", sampleBook.getIsbn()))
+    mockMvc.perform(get("/api/v1/books/{isbn}", sampleBook.getIsbn()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isbn").value(sampleBook.getIsbn()));
     }
@@ -100,14 +100,14 @@ class BookControllerTests {
     @Test
     void getBookByISBN_NotFound_ReturnsNotFound() throws Exception {
         Mockito.when(bookService.getBookByISBN("notfound")).thenThrow(new com.library.exception.BookNotFoundException("Book not found"));
-        mockMvc.perform(get("/books/{isbn}", "notfound"))
+    mockMvc.perform(get("/api/v1/books/{isbn}", "notfound"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void updateBook_ValidInput_ReturnsUpdatedBook() throws Exception {
         Mockito.when(bookService.updateBook(Mockito.eq(sampleBook.getIsbn()), any(Book.class))).thenReturn(sampleBook);
-        mockMvc.perform(put("/books/{isbn}", sampleBook.getIsbn())
+    mockMvc.perform(put("/api/v1/books/{isbn}", sampleBook.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleBook)))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ class BookControllerTests {
     @Test
     void updateBook_NotFound_ReturnsNotFound() throws Exception {
         Mockito.when(bookService.updateBook(Mockito.eq("notfound"), any(Book.class))).thenThrow(new com.library.exception.BookNotFoundException("Book not found"));
-        mockMvc.perform(put("/books/{isbn}", "notfound")
+    mockMvc.perform(put("/api/v1/books/{isbn}", "notfound")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleBook)))
                 .andExpect(status().isNotFound());
@@ -132,7 +132,7 @@ class BookControllerTests {
         patch.setGenre(null);
         patch.setCopiesAvailable(null);
         Mockito.when(bookService.updateBookPartial(Mockito.eq(sampleBook.getIsbn()), any(BookPatch.class))).thenReturn(sampleBook);
-        mockMvc.perform(patch("/books/{isbn}", sampleBook.getIsbn())
+    mockMvc.perform(patch("/api/v1/books/{isbn}", sampleBook.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(patch)))
                 .andExpect(status().isOk())
@@ -142,14 +142,14 @@ class BookControllerTests {
     @Test
     void deleteBook_ValidInput_ReturnsNoContent() throws Exception {
         Mockito.doNothing().when(bookService).deleteBook(sampleBook.getIsbn());
-        mockMvc.perform(delete("/books/{isbn}", sampleBook.getIsbn()))
+    mockMvc.perform(delete("/api/v1/books/{isbn}", sampleBook.getIsbn()))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteBook_NotFound_ReturnsNotFound() throws Exception {
         Mockito.doThrow(new com.library.exception.BookNotFoundException("Book not found")).when(bookService).deleteBook("notfound");
-        mockMvc.perform(delete("/books/{isbn}", "notfound"))
+    mockMvc.perform(delete("/api/v1/books/{isbn}", "notfound"))
                 .andExpect(status().isNotFound());
     }
 
@@ -164,7 +164,7 @@ class BookControllerTests {
         book2.setCopiesAvailable(2);
         List<Book> books = Arrays.asList(sampleBook, book2);
         Mockito.when(bookService.getBooksByIsbnRange("9781234567890", "9781234567891")).thenReturn(books);
-        mockMvc.perform(get("/books/isbn-range")
+    mockMvc.perform(get("/api/v1/books/isbn-range")
                         .param("startIsbn", "9781234567890")
                         .param("endIsbn", "9781234567891"))
                 .andExpect(status().isOk())

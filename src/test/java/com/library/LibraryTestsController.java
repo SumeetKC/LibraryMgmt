@@ -17,11 +17,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.controller.BookController;
+import com.library.controller.BookControllerV1;
 import com.library.entity.Book;
 import com.library.service.BookService;
 
-@WebMvcTest(BookController.class)
+@WebMvcTest(BookControllerV1.class)
 public class LibraryTestsController {
 
     @MockitoBean
@@ -39,7 +39,7 @@ public class LibraryTestsController {
         List<Book> books = List.of(new Book("9781234567890", "The Great Gatsby", "F. Scott Fitzgerald", 1925, null, 5));
         when(bookService.getBooks()).thenReturn(books);
 
-        mockMvc.perform(get("/books"))
+    mockMvc.perform(get("/api/v1/books"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].isbn").value("9781234567890"))
         .andExpect(jsonPath("$[0].title").value("The Great Gatsby"));
@@ -54,7 +54,7 @@ public class LibraryTestsController {
         Book book = new Book("9781234567890", "The Great Gatsby", "F. Scott Fitzgerald", 1925, null, 5);
         when(bookService.createBook(any(Book.class))).thenReturn(book);
 
-        mockMvc.perform(post("/books")
+    mockMvc.perform(post("/api/v1/books")
         .contentType("application/json")
         .content(objectMapper.writeValueAsString(book))
         ).andExpect(status().isCreated())

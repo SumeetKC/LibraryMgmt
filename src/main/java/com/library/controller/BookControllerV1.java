@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/books")
-public class BookController {
+@RequestMapping("/api/v1/books")
+public class BookControllerV1 {
 
     private final BookService bookService;
 
     @Autowired
     private Validator validator;
 
-    public BookController(BookService bookService) {
+    public BookControllerV1(BookService bookService) {
         this.bookService = bookService;
     }
 

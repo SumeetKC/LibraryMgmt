@@ -27,10 +27,10 @@ public class SecurityConfig{
         httpSecurity
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/hello", "/hello/**").permitAll()
-                .requestMatchers("/create-user","/create-user/**").permitAll()
-                .requestMatchers("/users","/users/**").authenticated()
-                .requestMatchers("/books/**").authenticated()
+                .requestMatchers("/api/v1/hello", "/api/v1/hello/**").permitAll()
+                .requestMatchers("/api/v1/create-user","/api/v1/create-user/**").permitAll()
+                .requestMatchers("/api/v1/users","/api/v1/users/**").authenticated()
+                .requestMatchers("/api/v1/books/**").authenticated()
                 .anyRequest().authenticated()
                 )
                 // Use HTTP Basic for API clients (Postman) so the server responds with 401 + WWW-Authenticate

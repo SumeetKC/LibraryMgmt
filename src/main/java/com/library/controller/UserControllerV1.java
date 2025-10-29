@@ -11,12 +11,12 @@ import com.library.entity.User;
 import com.library.service.UserDetailsServiceImpl;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/api/v1/users")
+public class UserControllerV1 {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public UserController(UserDetailsServiceImpl userDetailsServiceImpl) {
+    public UserControllerV1(UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
